@@ -4,7 +4,6 @@ import numpy as np
 from collections import deque
 import matplotlib.pyplot as plt
 
-from ddpg import ReplayBuffer, BUFFER_SIZE, BATCH_SIZE
 from maddpg import MADDPG 
 
 LEN_DEQUE = 100
@@ -22,6 +21,7 @@ def train_maddpg(n_episodes, print_every, threshold, brain_name, max_len_deque=L
         env_info = env.reset(train_mode=True)[brain_name]
         states = env_info.vector_observations
         score = np.zeros(num_agents)
+        episode_score = 0
         agent.reset()
         while True: # The task is episodic
             actions = agent.act(states)
@@ -52,7 +52,7 @@ def train_maddpg(n_episodes, print_every, threshold, brain_name, max_len_deque=L
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--env_file', '-e', default='', type=str)
-    parser.add_argument('--n_episodes', '-n', default=3000, type=int)
+    parser.add_argument('--n_episodes', '-n', default=4000, type=int)
     parser.add_argument('--print_every', default=50, type=int)
     args = parser.parse_args()
 
@@ -68,8 +68,7 @@ if __name__ == "__main__":
     num_stacked_obs = 3
     state_size = state_size_per_agent * num_stacked_obs
     action_size_per_agent = 2
-    sharedBuffer = ReplayBuffer(BUFFER_SIZE, BATCH_SIZE) # Replay buffer that will be shared by the two agents
-    agent= MADDPG(state_size, action_size_per_agent, 0, sharedBuffer)
+    agent= MADDPG(state_size=state_size, action_size=action_size_per_agent, random_seed=0)
 
     #Train with MADDPG algorithm
     threshold = 0.5 
