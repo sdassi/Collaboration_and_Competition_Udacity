@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+#Linux word
+*.odt
+
 # Distribution / packaging
 .Python
 build/
